@@ -15,18 +15,6 @@ In the ever-evolving banking and finance landscape, comprehending customer behav
 ### Project Objective:
 The primary goal of this project is to delve into customer transactions and identify trends that could impact regional economies and financial systems. By adeptly applying data cleaning techniques in Python and utilizing SQL queries on interconnected tables, we aim to understand how customer transactions vary across different regions comprehensively and the potential implications they hold for the banking sector.
 
-### Data Sources:
-This project relies on three key tables, each contributing crucial information for analysis:
-
-#### world_regions table:
-This table contains data on various world regions, encompassing region codes and names. It serves as a valuable reference for categorizing customers based on their regional affiliations.
-
-#### user_nodes table:
-The user_nodes table holds pivotal details regarding consumers' banking nodes. It includes unique consumer IDs, region IDs, node IDs, and start and end dates. This dataset enables precise identification of the banking nodes to which customers are linked and the duration of these associations.
-
-#### user_transaction table:
-The user_transaction table is a comprehensive repository of customer transactions. It encompasses consumer IDs, transaction dates, transaction types, and transaction amounts. A thorough analysis of this dataset unveils patterns in customer spending and financial behaviors, shedding light on their implications for the banking landscape.
-
 ## Certificate 
 ![certificate](https://github.com/AnupriyaRastogi/Analyzing-Banking-Trends/assets/100975423/2553b0a7-0e1c-45f1-85cc-5f287d181f01)
 
