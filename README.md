@@ -6,7 +6,7 @@ This is a project that was done on the @HiCouselor website. They have multiple r
 2. SQL -> to analyze the data
 ### Difficulty Level- Advanced 
 
-###Project Overview:
+## Project Overview:
 In the dynamic realm of banking and finance, gaining insights into customer behavior and understanding the regional consequences of transactions are pivotal for informed decision-making and strategic planning. This project, hosted on the @HiCounselor website, titled "Real-world Data Analysis: Banking Trends and Regional Impact," takes on this challenge. It is part of real-world problem-based projects designed to provide valuable hands-on experience to individuals pursuing early careers, internships, and job opportunities. With a focus on the role of a Data Analyst, this project involves advanced-level skills in Python and SQL to uncover intricate patterns in customer transactions and their potential ramifications on the global banking sphere.
 
 ### Project Description:
@@ -26,3 +26,7 @@ The user_nodes table holds pivotal details regarding consumers' banking nodes. I
 
 #### user_transaction table:
 The user_transaction table is a comprehensive repository of customer transactions. It encompasses consumer IDs, transaction dates, transaction types, and transaction amounts. A thorough analysis of this dataset unveils patterns in customer spending and financial behaviors, shedding light on their implications for the banking landscape.
+
+## Certificate 
+![certificate](https://github.com/AnupriyaRastogi/Analyzing-Banking-Trends/assets/100975423/2553b0a7-0e1c-45f1-85cc-5f287d181f01)
+
