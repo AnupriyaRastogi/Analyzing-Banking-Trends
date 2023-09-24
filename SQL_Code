@@ -1,0 +1,217 @@
+Task 1
+# List all regions along with the number of users assigned to each region.
+
+
+    Select world_regions.region_name, ROUND(COUNT(consumer_id) / 7, 0) AS num_users
+    from world_regions
+    left join user_nodes on world_regions.region_id = user_nodes.region_id
+    Group by world_regions.region_id
+    order by world_regions.region_name;
+
+=========================================================================================================
+Task 2
+# Find the user who made the largest deposit amount and the transaction type for that deposit.
+
+with new as 
+(
+    select  consumer_id, 
+    transaction_type,
+    transaction_amount,
+    rank() over (order by transaction_amount DESC) as transaction_rank
+    from user_transaction
+    )
+select consumer_id, transaction_type, transaction_amount
+from new
+where transaction_rank = 1;
+
+============================================================================================================
+Task 3
+# Calculate the total amount deposited for each user in the "Europe" region.
+
+select ut.consumer_id, sum(transaction_amount) as total_deposit_amount
+from user_transaction ut
+join user_nodes un on un.consumer_id = ut.consumer_id
+where un.region_id = 2 and transaction_type = 'Deposit'
+group by ut.consumer_id
+order by total_deposit_amount DESC
+
+===========================================================================================================
+Task 4
+# Calculate the total number of transactions made by each user in the "United States" region.
+
+select ut.consumer_id, Count(*) as total_transaction_count
+from user_transaction ut
+join user_nodes un on un.consumer_id = ut.consumer_id
+where un.region_id = 1
+group by ut.consumer_id 
+order by total_transaction_count DESC
+
+===========================================================================================================
+Task 5
+# Calculate the total number of users who made more than 5 transactions.
+
+select ut.consumer_id, Count(*) as total_num_users
+from user_transaction ut
+group by ut.consumer_id 
+having total_num_users > 5
+order by total_num_users DESC
+
+===========================================================================================================
+Task 6
+# Find the regions with the highest number of nodes assigned to them.
+
+select region_name, Count(node_id) as num_of_nodes
+from user_nodes
+join world_regions on world_regions.region_id = user_nodes.region_id
+Group by user_nodes.region_id
+order by num_of_nodes DESC
+
+===========================================================================================================
+Task 7
+# Find the user who made the largest deposit amount in the "Australia" region.
+
+with ut as 
+(
+select 
+Cast(Concat(substr(transaction_date, 7, 4), '-', substr(transaction_date, 4, 2),'-', substr(transaction_date, 1, 2)) as date) as transaction_date, 
+consumer_id, 
+transaction_amount
+from user_transaction
+where transaction_type = 'deposit' 
+),
+un as 
+(
+    select 
+     Cast(Concat(substr(start_date, 7, 4), '-', substr(start_date, 4, 2),'-', substr(start_date, 1, 2)) as date) as start_date,
+     Cast(Concat(substr(end_date, 7, 4), '-', substr(end_date, 4, 2),'-', substr(end_date, 1, 2)) as date) as end_date,
+     consumer_id, region_id, node_id
+    from user_nodes
+    ),
+largest_amt as
+(
+select ut.consumer_id, transaction_amount, row_number() over (order by transaction_amount DESC) as largest_deposit
+    from ut as ut
+    join un as un on un.consumer_id = ut.consumer_id and ut.transaction_date  >= un.start_date and ut.transaction_date  <= un.end_date 
+    where un.region_id = 3 
+    )
+select consumer_id, transaction_amount
+from largest_amt
+where largest_deposit = 1
+
+==========================================================================================================
+Task 8
+# Calculate the total amount deposited by each user in each region.
+
+with ut as 
+(
+    select 
+    Cast(Concat(substr(transaction_date, 7, 4), '-', substr(transaction_date, 4, 2),'-', substr(transaction_date, 1, 2)) as date) as transaction_date, 
+    consumer_id, transaction_amount
+    from user_transaction
+    where transaction_type = 'deposit' 
+),
+un as 
+(
+    select 
+     Cast(Concat(substr(start_date, 7, 4), '-', substr(start_date, 4, 2),'-', substr(start_date, 1, 2)) as date) as start_date,
+     Cast(Concat(substr(end_date, 7, 4), '-', substr(end_date, 4, 2),'-', substr(end_date, 1, 2)) as date) as end_date,
+     consumer_id, region_id, node_id
+    from user_nodes
+    )
+    select ut.consumer_id, region_name, sum(transaction_amount) as total_deposit_amount
+    from ut 
+    join un  on un.consumer_id = ut.consumer_id 
+    Join world_regions wr on un.region_id = wr.region_id
+    group by ut.consumer_id
+    order by total_deposit_amount
+
+===========================================================================================================
+Task 9
+# Retrieve the total number of transactions for each region
+
+select region_name, Count(*) as num_of_transaction
+from user_transaction ut
+join user_nodes un on ut.consumer_id = un.consumer_id
+join world_regions wr on un.region_id = wr.region_id
+group by un.region_id
+
+============================================================================================================
+Task 10
+# Write a query to find the total deposit amount for each region (region_name) in the user_transaction table. 
+# Consider only those transactions where the consumer_id is associated with a valid region in the user_nodes table.
+
+
+    select region_name, sum(transaction_amount) as total_deposit_amount
+    from user_transaction ut
+    join user_nodes un  on un.consumer_id = ut.consumer_id 
+    Join world_regions wr on un.region_id = wr.region_id
+    where ut.transaction_type = 'Deposit'
+    group by wr.region_name
+
+=============================================================================================================
+Task 11
+# Write a query to find the top 5 consumers who have made the highest total transaction amount (sum of all their deposit transactions)
+#             in the user_transaction table.
+
+with cte1 as
+(
+    select consumer_id,sum(transaction_amount) total_amount, rank() over (order by sum(transaction_amount) DESC) ranking
+from user_transaction
+where transaction_type = 'Deposit'
+group by consumer_id)
+select consumer_id, total_amount
+from cte1
+where ranking  <= 5
+
+=============================================================================================================
+Task 12
+# How many consumers are allocated to each region?
+
+
+select wr.region_id, region_name, Round(count(consumer_id)/ 7, 0) num_user
+from user_nodes un
+join world_regions wr on un.region_id = wr.region_id
+group by un.region_id
+order by num_user DESC
+
+==============================================================================================================
+Task 13
+# What is the unique count and total amount for each transaction type?
+
+select transaction_type, count(DISTINCT consumer_id) unique_count , sum(transaction_amount) total_amount
+from user_transaction
+group by transaction_type
+order by total_amount DESC
+
+==============================================================================================================
+Task 14
+# What are the average deposit counts and amounts for each transaction type ('deposit') across all customers, grouped by transaction type?
+
+with cte1 as
+(
+    SELECT
+        transaction_type,
+        consumer_id,
+        COUNT(*) AS deposit_count,
+        SUM(transaction_amount) AS transaction_amount
+    FROM user_transaction
+    WHERE transaction_type = 'Deposit'
+    GROUP BY transaction_type, consumer_id
+    )
+SELECT
+    transaction_type AS txn_type,
+    Floor(AVG(deposit_count)) AS avg_deposit_count,
+    Floor(AVG(transaction_amount)) AS avg_deposit_amount
+FROM cte1
+
+================================================================================================================
+Task 15
+# How many transactions were made by consumers from each region?
+
+
+    select wr.region_name, count(*) as trans
+    from user_transaction ut
+    join user_nodes un on un.consumer_id = ut.consumer_id 
+    Join world_regions wr on un.region_id = wr.region_id
+    group by un.region_id
+    order by trans desc
