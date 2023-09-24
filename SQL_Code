@@ -208,7 +208,6 @@ FROM cte1
 Task 15
 # How many transactions were made by consumers from each region?
 
-
     select wr.region_name, count(*) as trans
     from user_transaction ut
     join user_nodes un on un.consumer_id = ut.consumer_id 
